@@ -59,7 +59,7 @@ def log_message(msg):
 
 # I also need to log deletes? How to store in db?
 
-def log_reaction(payload):
+def log_reaction_add(payload):
     """Log reaction to log-file."""
     # with open(f"{msg.guild.id}_reactions.log", 'a+') as f:
     #     f.write(
@@ -67,6 +67,7 @@ def log_reaction(payload):
     #         f"{msg.content},{time.time()}\n"
     #     )
     pass
+
 # ---
 # Message events
 # ---
@@ -93,7 +94,7 @@ async def on_raw_bulk_message_delete(payload):
 @bot.event
 async def on_raw_reaction_add(payload):
     print(payload)
-    log_reaction(payload)
+    log_reaction_add(payload)
 
 @bot.event
 async def on_raw_reaction_remove(payload):
