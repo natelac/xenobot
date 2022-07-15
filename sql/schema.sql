@@ -31,16 +31,27 @@ CREATE TABLE usernames(
 );
 
 CREATE TABLE nicknames(
-  id INTEGER PRIMARY KEY AUTOICNREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER,
   nickname VARCHAR(32)
 );
 
-CREATE TABLE channels(
+CREATE TABLE channel_adds(
   channel_id INTEGER PRIMARY KEY,
   guild_id INTEGER,
   name INTEGER,
   created DATETIME
+);
+
+CREATE TABLE channel_deletes(
+  channel_id INTEGER PRIMARY KEY,
+  deleted DATETIME
+);
+
+CREATE TABLE channel_edits(
+  channel_id INTEGER PRIMARY KEY,
+  new_name varchar(32),
+  edited DATETIME
 );
 
 CREATE TABLE message_adds(
