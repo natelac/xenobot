@@ -1,4 +1,4 @@
-#!/usr/bin/env/ python3
+#!/usr/bin/env/ python3.8
 
 """Data scraping script for discord, loads data into an sqlite3 db
 """

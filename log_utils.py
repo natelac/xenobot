@@ -15,10 +15,11 @@ class sqlite3Logger:
 
     def insert_row(self, sql, vals):
         try:
+            #print(f"insert {sql} {vals}")
             self.cur.execute(sql, vals)
             self.conn.commit()
         except Exception as e:
-            print(e)
+            print(f"Error inserting row: {e}")
 
     async def full_log_guild(self, guild, earliest_date):
         """Iteratively logs all relevant information in a guild"""
@@ -32,9 +33,15 @@ class sqlite3Logger:
 
         for channel in guild.text_channels:
             self.log_text_channel(channel)
-            messages = [message async for message in channel.history(
-                            after=datetime.combine(earliest_date,
+            try:
+                messages = [message async for message in channel.history(
+                            after=datetime.combine(
+                                earliest_date,
                                 datetime.min.time()))]
+            except Exception as e:
+                print(f"Error fetching message: {e}")
+                continue
+
             for message in messages:
                 self.log_message(message)
                 for reaction in message.reactions:
@@ -43,7 +50,7 @@ class sqlite3Logger:
     # Guilds
     def log_guild(self, guild):
         sql = """ INSERT INTO guilds(guild_id, guildname, guildowner, created)
-                  VALUES(?,?) """
+                  VALUES(?,?,?,?) """
         vals = guild.id, guild.name, guild.owner_id, guild.created_at
         self.insert_row(sql, vals)
 
@@ -116,8 +123,8 @@ class sqlite3Logger:
         sql = """ INSERT INTO reactions(message_id, emoji, count)
                   VALUES(?,?,?) """
         # Checks for type of emoji?
-        emoji = reaction.emoji if type(reaction.emoji) == str else reaction.emoji.name
-        vals = reaction.message.id, reaction.emoji, reaction.count
+        emoji = str(reaction.emoji)
+        vals = reaction.message.id, emoji, reaction.count
         self.insert_row(sql, vals)
 
     def log_reaction_delete(self, payload):

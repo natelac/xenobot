@@ -5,6 +5,15 @@ usage() {
   echo "Usage: $0 (create|reset)"
 }
 
+prompt_delete() {
+  read -p "This will delete the entire database. Are you sure (y/n)? " -n 1 -r
+  echo    # (optional) move to a new line
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+        [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+  fi
+}
+
 if [ $# -ne 1 ]; then
   usage
   exit 1
@@ -18,12 +27,19 @@ case $1 in
     ;;
 
   "reset")
-    rm -r mkdir -p var/
+    prompt_delete
+    rm -r var/
     mkdir -p var/
     sqlite3 var/xenodb.sqlite3 < sql/schema.sql
+    ;;
+
+  "destroy")
+    prompt_delete
+    rm -r var/
     ;;
     
   *)
     usage
     exit 1
+
 esac
