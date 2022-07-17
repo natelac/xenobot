@@ -43,7 +43,8 @@ CREATE TABLE nicknames(
 );
 
 CREATE TABLE text_channels(
-  channel_name VARCHAR(32) PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel_name VARCHAR(32),
   guild_id INTEGER,
   position INTEGER,
   mention VARCHAR(32),
@@ -51,21 +52,22 @@ CREATE TABLE text_channels(
 );
 
 CREATE TABLE text_channel_deletes(
-  channel_id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel_name VARCHAR(32),
   deleted DATETIME
 );
 
 CREATE TABLE text_channel_edits(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name INTEGER,
-  new_name varchar(32),
+  channel_name VARCHAR(32),
+  new_name VARCHAR(32),
   edited DATETIME
 );
 
 CREATE TABLE messages(
   message_id INTEGER PRIMARY KEY,
   guild_id INTEGER REFERENCES guilds(guild_id),
-  channel_name INTEGER,
+  channel_name VARCHAR(32),
   author_id INTEGER,
   content VARCHAR(2000),
   created DATETIME

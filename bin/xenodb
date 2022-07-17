@@ -2,7 +2,7 @@
 # xenodb
 
 usage() {
-  echo "Usage: $0 (create)"
+  echo "Usage: $0 (create|reset)"
 }
 
 if [ $# -ne 1 ]; then
@@ -13,6 +13,12 @@ fi
 case $1 in
   "create")
     if (test -e var/xenodb.sqlite3) then echo "Error: database already exists"; exit 1; fi
+    mkdir -p var/
+    sqlite3 var/xenodb.sqlite3 < sql/schema.sql
+    ;;
+
+  "reset")
+    rm -r mkdir -p var/
     mkdir -p var/
     sqlite3 var/xenodb.sqlite3 < sql/schema.sql
     ;;
