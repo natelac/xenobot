@@ -32,6 +32,7 @@ case $1 in
     rm -r var/
     mkdir -p var/
     sqlite3 var/xenodb.sqlite3 < sql/schema.sql
+    sqlite3 var/xenodb.sqlite3 < sql/views.sql
     ;;
 
   "destroy")
