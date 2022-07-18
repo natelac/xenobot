@@ -1,10 +1,9 @@
 # xenobot
 
 ## TODO
+- Get gather.py to exit when it is done scraping
 
-- BUGFIXES
-  - Figure out what is getting converted (position 1?)
-  - Figure out what's up with the datetime.datetime object, should it be converted to UTC before being passed?
+### Future
 - Track discord information
   - What guilds the bot is in
   - Information per guild
