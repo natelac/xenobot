@@ -24,6 +24,7 @@ case $1 in
     if (test -e var/xenodb.sqlite3) then echo "Error: database already exists"; exit 1; fi
     mkdir -p var/
     sqlite3 var/xenodb.sqlite3 < sql/schema.sql
+    sqlite3 var/xenodb.sqlite3 < sql/views.sql
     ;;
 
   "reset")
