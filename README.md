@@ -3,9 +3,20 @@
 ## TODO
 - Get gather.py to exit when it is done scraping
 - Make more useful views
+  - Most recent logged nickname
+  - Count of emojis to all users messages
 - Make python analytics tools
   - Folder called "analytics"
-  - 
+  - Render "aesthetic" graphs
+    - Bar charts
+      - Most messages
+      - Most @'ed
+      - Most swears
+      - Number of messages by day of the week
+      - Number of messages by month of the year
+    - Line plots
+      - Number of messages week by week throughout the years
+- Comment code and files better
 
 ## Future Features
 - Track discord information
@@ -17,6 +28,7 @@
     - All channel information
       - Log of messages sent, and by whom
       - Log when a channel is created/deleted/changed
+      - Log when a user is typing and for how long
     - All voice channel information
       - Log voice channel messages
       - Log of users joining/leaving a voice channel
