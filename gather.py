@@ -58,6 +58,7 @@ async def on_ready():
     # Start logging
     logger = sqlite3Logger(args.db_path)
     await logger.full_log_guild(guild, args.earliest_date)
+    sys.exit("Done logging guild, messy exit");
 
 
 def main(argv):

@@ -5,6 +5,8 @@ usage() {
   echo "Usage: $0 (create|reset)"
 }
 
+DB_PATH="var/xenodb.sqlite3"
+
 prompt_delete() {
   read -p "This will delete the entire database. Are you sure (y/n)? " -n 1 -r
   echo    # (optional) move to a new line
@@ -29,7 +31,7 @@ case $1 in
 
   "reset")
     prompt_delete
-    rm -r var/
+    rm $DB_PATH
     mkdir -p var/
     sqlite3 var/xenodb.sqlite3 < sql/schema.sql
     sqlite3 var/xenodb.sqlite3 < sql/views.sql
@@ -37,7 +39,7 @@ case $1 in
 
   "destroy")
     prompt_delete
-    rm -r var/
+    rm $DB_PATH
     ;;
     
   *)

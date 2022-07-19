@@ -3,7 +3,7 @@
 ## TODO
 - Get gather.py to exit when it is done scraping
 
-### Future
+## Future Features
 - Track discord information
   - What guilds the bot is in
   - Information per guild
@@ -32,7 +32,3 @@
     - If people are voting keep and remove, weight how much longer it stays by the ratio of the vote
       - This could be a bit toxic, but the idea is that there is limited space, so people are voting for how to distribute the space
     - Contested movies should be voted on sooner than uncontested movies, so that the bot doesn't spam.
-
-## Questions
-- Nickname vs username, can you track and log name changes across both? Is there an on_* command?
-- Max character length of emoji

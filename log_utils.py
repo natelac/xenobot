@@ -35,6 +35,7 @@ class sqlite3Logger:
             self.log_text_channel(channel)
             try:
                 messages = [message async for message in channel.history(
+                            limit=None,
                             after=datetime.combine(
                                 earliest_date,
                                 datetime.min.time()))]
