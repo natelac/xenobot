@@ -3,35 +3,42 @@
 import pathlib
 import sqlite3
 from datetime import datetime
+import logging
+
+# Setup logger
+log = logging.getLogger("gather")
 
 class sqlite3Logger:
     def __init__(self, db_path):
         try:
             self.conn = sqlite3.connect(db_path)
         except:
-            print(f"Could not open sqlite3 connection for: {db_path}")
+            log.error(f"Could not open sqlite3 connection for: {db_path}")
             raise
         self.cur = self.conn.cursor()
 
     def insert_row(self, sql, vals):
         try:
-            #print(f"insert {sql} {vals}")
             self.cur.execute(sql, vals)
             self.conn.commit()
         except Exception as e:
-            print(f"Error inserting row: {e}")
+            log.debug(f"Could not insert row: {e}")
 
     async def full_log_guild(self, guild, earliest_date):
         """Iteratively logs all relevant information in a guild"""
         self.log_guild(guild)
+        log.info(f"Logging guild '{guild.name}'")
 
+        log.info(f"Logging members")
         for member in guild.members:
+            log.debug(f"Logging user '{member.name}'")
             self.log_user(member)
             self.log_username(member)
             self.log_nickname(member, guild)
             self.log_guild_member(member, guild)
 
         for channel in guild.text_channels:
+            log.info(f"Logging channel '{channel.name}'")
             self.log_text_channel(channel)
             try:
                 messages = [message async for message in channel.history(
@@ -40,12 +47,13 @@ class sqlite3Logger:
                                 earliest_date,
                                 datetime.min.time()))]
             except Exception as e:
-                print(f"Error fetching message: {e}")
+                log.info(f"Could not fetch message: {e}")
                 continue
-
             for message in messages:
+                log.debug(f"Logging message from timestamp '{message.created_at}'")
                 self.log_message(message)
                 for reaction in message.reactions:
+                    log.debug(f"Logging reaction '{reaction.emoji}'")
                     self.log_reaction(reaction)
 
     # Guilds
@@ -105,13 +113,7 @@ class sqlite3Logger:
                   VALUES(?,?,?,?,?,?) """
         vals = msg.id, msg.guild.id, msg.channel.name, msg.author.id, \
                 msg.content, msg.created_at
-        try:
-            self.cur.execute(sql, vals)
-            self.conn.commit()
-        except Exception as e:
-            print(e)
-            #print(vals)
-        #self.insert_row(sql, vals)
+        self.insert_row(sql, vals)
 
     def log_message_delete(self, payload):
         pass
