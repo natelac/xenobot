@@ -2,6 +2,10 @@
 
 ## TODO
 - Get gather.py to exit when it is done scraping
+- Make more useful views
+- Make python analytics tools
+  - Folder called "analytics"
+  - 
 
 ## Future Features
 - Track discord information
@@ -32,3 +36,4 @@
     - If people are voting keep and remove, weight how much longer it stays by the ratio of the vote
       - This could be a bit toxic, but the idea is that there is limited space, so people are voting for how to distribute the space
     - Contested movies should be voted on sooner than uncontested movies, so that the bot doesn't spam.
+- Get a backup system working
