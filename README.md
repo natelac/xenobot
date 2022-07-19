@@ -1,7 +1,12 @@
 # xenobot
 
 ## TODO
-- Get gather.py to exit when it is done scraping
+- Make xenobot always running
+  - Have commands sent to it via http
+- Implement passive logging
+- Comment code and files better
+
+## Future Features
 - Make more useful views
   - Most recent logged nickname
   - Count of emojis to all users messages
@@ -16,9 +21,6 @@
       - Number of messages by month of the year
     - Line plots
       - Number of messages week by week throughout the years
-- Comment code and files better
-
-## Future Features
 - Track discord information
   - What guilds the bot is in
   - Information per guild
