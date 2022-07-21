@@ -19,6 +19,8 @@
       - Most swears
       - Number of messages by day of the week
       - Number of messages by month of the year
+      - Top poster by channel
+      - Reaction stuff
     - Line plots
       - Number of messages week by week throughout the years
 - Track discord information
