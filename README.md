@@ -3,6 +3,8 @@
 ## TODO
 - Make xenobot always running
   - Have commands sent to it via http
+- Add argument parsing to bot.py
+- Make bin/xenobot more clean
 - Implement passive logging
 - Comment code and files better
 

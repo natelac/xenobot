@@ -1,0 +1,41 @@
+#!/bin/bash
+# xenobot
+
+# TODO:
+# - Check that python3 exists and that it is python3.8, if not ry running python3.8
+# directly
+
+main_usage() {
+  echo "Usage: $0 (start [-g guild -p db_path] | gather [-g guild -p db_path | stop)"
+}
+
+function main(){
+  if [[ ${#} == 0 ]]; then
+    main_usage;
+  fi
+
+  case ${1} in
+    help | start | gather | stop)
+      ${1} "${@:2}";
+      ;;
+    *)
+      echo $main_usage;
+      exit 1;
+      ;;
+  esac
+}
+
+function start(){
+  python3.8 bot.py "$@"
+}
+
+function gather(){
+  python3.8 gather.py "$@"
+}
+
+function stop(){
+  echo "stop not implemented"
+}
+  
+main "$@";
+exit 0
