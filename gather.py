@@ -22,9 +22,9 @@ from log_utils import sqlite3Logger
 DEFAULT_GUILD = "Area 51"
 DEFAULT_DB_PATH = pathlib.Path("var/xenodb.sqlite3")
 
-# Parse the arguments
+# Parse arguments
 parser = argparse.ArgumentParser(
-    description="Scrape existing data from discord servers")
+        description="Scrape existing data from discord servers")
 parser.add_argument('-g', '--guild', type=str,
                     help='name of guild to scrape data from',
                     default=DEFAULT_GUILD)
