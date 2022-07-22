@@ -1,14 +1,21 @@
 # xenobot
 
+A bot used for gathering 
+
 ## TODO
 - Make xenobot always running
   - Have commands sent to it via http
 - Add argument parsing to bot.py
 - Make bin/xenobot more clean
-- Implement passive logging
-- Comment code and files better
 
 ## Future Features
+- Make a config file
+  - Set time intervals for active monitoring
+  - Set default earliest\_date for gathering data
+  - Store default DB\_PATH and GUILD
+  - Add whitelist/blacklists to channels/users etc.
+- Comment code and files better
+- Implement passive logging
 - Make more useful views
   - Most recent logged nickname
   - Count of emojis to all users messages
