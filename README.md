@@ -3,9 +3,10 @@
 A bot used for gathering 
 
 ## TODO
+- Implement logging in "bot.py" using "log\_utils.py"
+- Add argument parsing to bot.py
 - Make xenobot always running
   - Have commands sent to it via http
-- Add argument parsing to bot.py
 - Make bin/xenobot more clean
 
 ## Future Features

@@ -64,6 +64,7 @@ intents.guilds = True
 intents.messages = True
 intents.reactions = True
 
+# Initialize the bot
 bot = commands.Bot(command_prefix='!',intents=intents)
 
 @bot.event
@@ -73,6 +74,7 @@ async def on_ready():
     guild = discord.utils.get(bot.guilds, name=GUILD)
     if guild is None:
         log.error(f"Could not find guild: {GUILD}")
+        await bot.close()
 
     # Start logging
     logger = sqlite3Logger(args.db_path)
