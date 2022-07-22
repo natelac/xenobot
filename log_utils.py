@@ -121,6 +121,9 @@ class sqlite3Logger:
     def log_message_edit(self, payload):
         pass
 
+    def log_message_add(self, msg):
+        return self.log_message(msg)
+
     # Reactions
     def log_reaction(self, reaction):
         sql = """ INSERT INTO reactions(message_id, emoji, count)
@@ -129,6 +132,9 @@ class sqlite3Logger:
         emoji = str(reaction.emoji)
         vals = reaction.message.id, emoji, reaction.count
         self.insert_row(sql, vals)
+
+    def log_reaciton_add(self, payload):
+        pass
 
     def log_reaction_delete(self, payload):
         pass

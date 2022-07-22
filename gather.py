@@ -22,9 +22,9 @@ from log_utils import sqlite3Logger
 DEFAULT_GUILD = "Area 51"
 DEFAULT_DB_PATH = pathlib.Path("var/xenodb.sqlite3")
 
-# Parse the arguments
+# Parse arguments
 parser = argparse.ArgumentParser(
-    description="Scrape existing data from discord servers")
+        description="Scrape existing data from discord servers")
 parser.add_argument('-g', '--guild', type=str,
                     help='name of guild to scrape data from',
                     default=DEFAULT_GUILD)
@@ -64,6 +64,7 @@ intents.guilds = True
 intents.messages = True
 intents.reactions = True
 
+# Initialize the bot
 bot = commands.Bot(command_prefix='!',intents=intents)
 
 @bot.event
@@ -73,6 +74,7 @@ async def on_ready():
     guild = discord.utils.get(bot.guilds, name=GUILD)
     if guild is None:
         log.error(f"Could not find guild: {GUILD}")
+        await bot.close()
 
     # Start logging
     logger = sqlite3Logger(args.db_path)

@@ -1,15 +1,26 @@
 # xenobot
 
+A bot used for gathering 
+
 ## TODO
+- Implement logging in "bot.py" using "log\_utils.py"
+- Add argument parsing to bot.py
 - Make xenobot always running
   - Have commands sent to it via http
-- Implement passive logging
-- Comment code and files better
+<<<<<<< HEAD
 - Using "crontab -e" to make a cron job for the bot!!!
 
 ## Future Features
 - Fix duplicate values for "gather.py"
   - I think it's just things that have incremental primary keys?
+- Make a config file
+  - Set time intervals for active monitoring
+  - Set default earliest\_date for gathering data
+  - Store default DB\_PATH and GUILD
+  - Add whitelist/blacklists to channels/users etc.
+- Comment code and files better
+- Implement passive logging
+>>>>>>> 8b21807b00863ece98fb113fe7eee768fdc1d610
 - Make more useful views
   - Most recent logged nickname
   - Count of emojis to all users messages
@@ -22,6 +33,8 @@
       - Most swears
       - Number of messages by day of the week
       - Number of messages by month of the year
+      - Top poster by channel
+      - Reaction stuff
     - Line plots
       - Number of messages week by week throughout the years
 - Track discord information
