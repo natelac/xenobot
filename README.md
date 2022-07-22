@@ -5,8 +5,11 @@
   - Have commands sent to it via http
 - Implement passive logging
 - Comment code and files better
+- Using "crontab -e" to make a cron job for the bot!!!
 
 ## Future Features
+- Fix duplicate values for "gather.py"
+  - I think it's just things that have incremental primary keys?
 - Make more useful views
   - Most recent logged nickname
   - Count of emojis to all users messages
