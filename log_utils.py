@@ -6,7 +6,7 @@ from datetime import datetime
 import logging
 
 # Setup logger
-log = logging.getLogger("gather")
+log = logging.getLogger("bot")
 
 class sqlite3Logger:
     def __init__(self, db_path):
@@ -108,6 +108,8 @@ class sqlite3Logger:
 
     # Messages
     def log_message(self, msg):
+        log.debug(f"Logging message '{msg.id}' in channel '{msg.channel_id}'
+        created at timestamp '{msg.timestamp'"})
         sql = """ INSERT INTO messages(message_id, guild_id, channel_name,
                     author_id, content, created)
                   VALUES(?,?,?,?,?,?) """
@@ -116,9 +118,19 @@ class sqlite3Logger:
         self.insert_row(sql, vals)
 
     def log_message_delete(self, payload):
+        log.debug(f"Logging edletion of message '{msg.id}'")
+        # TODO
+        sql = None
+        vals = None
+        #self.insert_row(sql, vals)
         pass
 
     def log_message_edit(self, payload):
+        #log.debug(f"Logging edit of message '{msg.id}' in channel
+        #'{msg.channel_id}' edited at '{msg.timestamp'}")
+        sql = None
+        vals = None
+        #self.insert_row(sql, vals)
         pass
 
     def log_message_add(self, msg):
@@ -126,20 +138,32 @@ class sqlite3Logger:
 
     # Reactions
     def log_reaction(self, reaction):
+        emoji = str(reaction.emoji)
+        #log.debug(f"Logging reaction '{emoji}' on message
+        #'{reaction.message.id}'")
         sql = """ INSERT INTO reactions(message_id, emoji, count)
                   VALUES(?,?,?) """
         # Checks for type of emoji?
         emoji = str(reaction.emoji)
         vals = reaction.message.id, emoji, reaction.count
-        self.insert_row(sql, vals)
+        #self.insert_row(sql, vals)
 
     def log_reaciton_add(self, payload):
+        emoji = str(payload.emoji)
+        #log.debug(f"Logging reaction emoji '{emoji}' added by
+        #'{payload.user_id}' to message '{message_id}'")
+        sql = None
+        vals = None
+        #self.insert_row(sql, vals)
         pass
 
     def log_reaction_delete(self, payload):
-        pass
-
-    def log_reaction_edit(self, payload):
+        emoji = str(payload.emoji)
+        #log.debug(f"Logging reaction emoji '{emoji}' deleted by user
+        #'{payload.user_i}'")
+        sql = None
+        vals = None
+        #self.insert_row(sql, vals)
         pass
 
     # Typing

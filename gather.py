@@ -48,7 +48,7 @@ args = parser.parse_args()
 levels = [logging.WARNING, logging.INFO, logging.DEBUG]
 level = levels[min(args.verbose, len(levels) - 1)]
 logging.basicConfig(level=logging.CRITICAL, format='%(message)s')
-log = logging.getLogger('gather')
+log = logging.getLogger('bot')
 log.setLevel(level=level)
 
 # Setup the bot

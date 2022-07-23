@@ -72,6 +72,7 @@ async def on_ready():
     while(True):
         # TODO:
         # - Add logic here to recieve a shutdown command then run bot.close()
+        log.info(f"Logging user statuses")
         log_guild_statuses(guild)
         await asyncio.sleep(LOG_TIME)
 
@@ -80,7 +81,7 @@ async def on_ready():
 # ------------
 @bot.event
 async def on_message(msg):
-    print(msg)
+    log.debug
     log_message(msg)
 
 @bot.event
