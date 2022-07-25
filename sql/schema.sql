@@ -43,22 +43,22 @@ CREATE TABLE nicknames(
 );
 
 CREATE TABLE text_channels(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel_id INTEGER PRIMARY KEY,
   channel_name VARCHAR(32),
   guild_id INTEGER,
   position INTEGER,
-  mention VARCHAR(32),
   created DATETIME
 );
 
 CREATE TABLE text_channel_deletes(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel_id INTEGER PRIMARY KEY,
   channel_name VARCHAR(32),
   deleted DATETIME
 );
 
 CREATE TABLE text_channel_edits(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel_id INTEGER,
   channel_name VARCHAR(32),
   new_name VARCHAR(32),
   edited DATETIME
@@ -67,7 +67,7 @@ CREATE TABLE text_channel_edits(
 CREATE TABLE messages(
   message_id INTEGER PRIMARY KEY,
   guild_id INTEGER REFERENCES guilds(guild_id),
-  channel_name VARCHAR(32),
+  channel_id INTEGER,
   author_id INTEGER,
   content VARCHAR(2000),
   created DATETIME
@@ -75,7 +75,7 @@ CREATE TABLE messages(
 
 CREATE TABLE message_deletes(
   message_id INTEGER PRIMARY KEY,
-  deleted DATETIME
+  deleted DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE message_edits(
@@ -96,15 +96,16 @@ CREATE TABLE reaction_adds(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   message_id INTEGER,
   user_id INTEGER,
-  reaction VARCHAR(32),
-  created DATETIME
+  emoji VARCHAR(32),
+  created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE reaction_deletes(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   message_id INTEGER,
   user_id INTEGER,
-  deleted DATETIME
+  emoji VARCHAR(32),
+  deleted DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE typing(

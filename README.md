@@ -3,12 +3,12 @@
 A bot used for gathering 
 
 ## TODO
-- Implement logging in "bot.py" using "log\_utils.py"
+- Implement sql\_logging in "bot.py" using "log\_utils.py"
 - Add argument parsing to bot.py
 - Make xenobot always running
   - Have commands sent to it via http
-<<<<<<< HEAD
 - Using "crontab -e" to make a cron job for the bot!!!
+- Standardize logging (fx log.info vs log.debug) 
 
 ## Future Features
 - Fix duplicate values for "gather.py"
@@ -20,7 +20,6 @@ A bot used for gathering
   - Add whitelist/blacklists to channels/users etc.
 - Comment code and files better
 - Implement passive logging
->>>>>>> 8b21807b00863ece98fb113fe7eee768fdc1d610
 - Make more useful views
   - Most recent logged nickname
   - Count of emojis to all users messages

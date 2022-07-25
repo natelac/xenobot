@@ -26,8 +26,8 @@ class sqlite3Logger:
 
     async def full_log_guild(self, guild, earliest_date):
         """Iteratively logs all relevant information in a guild"""
-        self.log_guild(guild)
         log.info(f"Logging guild '{guild.name}'")
+        self.log_guild(guild)
 
         log.info(f"Logging members")
         for member in guild.members:
@@ -76,12 +76,6 @@ class sqlite3Logger:
         vals = user.id, user.name
         self.insert_row(sql, vals)
 
-    def log_nickname(self, member, guild):
-        sql = """ INSERT INTO nicknames(user_id, guild_id, nickname)
-                  VALUES(?,?,?) """
-        vals = member.id, guild.id, member.display_name
-        self.insert_row(sql, vals)
-
     # Guild members
     def log_guild_member(self, member, guild):
         sql = """ INSERT INTO guild_members(user_id, guild_id)
@@ -89,49 +83,63 @@ class sqlite3Logger:
         vals = member.id, guild.id
         self.insert_row(sql, vals)
 
+    def log_nickname(self, member, guild):
+        sql = """ INSERT INTO nicknames(user_id, guild_id, nickname)
+                  VALUES(?,?,?) """
+        vals = member.id, guild.id, member.display_name
+        self.insert_row(sql, vals)
+
     def log_user_status(self, member):
+        sql = """ INSERT INTO user_statuses(user_id, status)
+                  VALUES(?,?) """
         pass
 
     # Channels
     def log_text_channel(self, channel):
-        sql = """ INSERT INTO text_channels(channel_name, guild_id, position, mention, created)
-                  VALUES(?,?,?,?,?) """
-        vals = channel.name, channel.guild.id, channel.position, \
-                channel.mention, channel.created_at
+        sql = """ INSERT INTO text_channels(channel_id, channel_name, guild_id, position, mention, created)
+                  VALUES(?,?,?,?,?,?) """
+        vals = channel.id, channel.name, channel.guild.id, channel.position, \
+               channel.mention, channel.created_at
         self.insert_row(sql, vals)
 
+    def log_text_channel_add(self, channel):
+        self.log_text_channel(channel)
+
     def log_channel_delete(self, payload):
+        #TODO
+        sql = """ INSERT INTO text_channel_deletes(channel_name, guild_id,
+                      position, mention, created)
+                  VALUES(?,?,?,?,?) """
         pass
 
     def log_channel_edit(self, payload):
+        #TODO
+        sql = """ INSERT INTO text_channel_deletes(channel_name, deleted)
+                  VALUES(?,?) """
         pass
 
     # Messages
     def log_message(self, msg):
-        log.debug(f"Logging message '{msg.id}' in channel '{msg.channel_id}'
-        created at timestamp '{msg.timestamp'"})
-        sql = """ INSERT INTO messages(message_id, guild_id, channel_name,
-                    author_id, content, created)
+        log.debug(f"Logging message '{msg.id}'")
+        sql = """ INSERT INTO messages(message_id, guild_id, channel_id,
+                      author_id, content, created)
                   VALUES(?,?,?,?,?,?) """
         vals = msg.id, msg.guild.id, msg.channel.name, msg.author.id, \
                 msg.content, msg.created_at
         self.insert_row(sql, vals)
 
     def log_message_delete(self, payload):
-        log.debug(f"Logging edletion of message '{msg.id}'")
-        # TODO
-        sql = None
-        vals = None
-        #self.insert_row(sql, vals)
-        pass
+        log.debug(f"Logging deletion of message '{payload.message_id}'")
+        sql = """ INSERT INTO message_deletes(message_id)
+                  VALUES(?) """
+        vals = (payload.message_id,)
+        self.insert_row(sql, vals)
 
-    def log_message_edit(self, payload):
-        #log.debug(f"Logging edit of message '{msg.id}' in channel
-        #'{msg.channel_id}' edited at '{msg.timestamp'}")
-        sql = None
-        vals = None
-        #self.insert_row(sql, vals)
-        pass
+    def log_message_edit(self, edited_msg):
+        log.debug(f"Logging edit of message '{edited_msg.id}'")
+        sql = """ INSERT INTO message_edits(message_id, new_content, edited)"""
+        vals = edited_msg.id, edited_msg.content, edited_msg.edited_at
+        self.insert_row(sql, vals)
 
     def log_message_add(self, msg):
         return self.log_message(msg)
@@ -139,31 +147,29 @@ class sqlite3Logger:
     # Reactions
     def log_reaction(self, reaction):
         emoji = str(reaction.emoji)
-        #log.debug(f"Logging reaction '{emoji}' on message
-        #'{reaction.message.id}'")
+        log.debug(f"Logging reaction '{emoji}' on message "
+                  f"'{reaction.message.id}'")
         sql = """ INSERT INTO reactions(message_id, emoji, count)
                   VALUES(?,?,?) """
-        # Checks for type of emoji?
-        emoji = str(reaction.emoji)
         vals = reaction.message.id, emoji, reaction.count
-        #self.insert_row(sql, vals)
+        self.insert_row(sql, vals)
 
-    def log_reaciton_add(self, payload):
+    def log_reaction_add(self, payload):
         emoji = str(payload.emoji)
-        #log.debug(f"Logging reaction emoji '{emoji}' added by
-        #'{payload.user_id}' to message '{message_id}'")
-        sql = None
-        vals = None
-        #self.insert_row(sql, vals)
-        pass
+        log.debug(f"Logging reaction emoji '{emoji}' added by user "
+                  f"'{payload.user_id}'")
+        sql = """ INSERT INTO reaction_adds(message_id, user_id, emoji)
+                  VALUES(?,?,?) """
+        vals = payload.message_id, payload.user_id, emoji
+        self.insert_row(sql, vals)
 
     def log_reaction_delete(self, payload):
         emoji = str(payload.emoji)
-        #log.debug(f"Logging reaction emoji '{emoji}' deleted by user
-        #'{payload.user_i}'")
-        sql = None
-        vals = None
-        #self.insert_row(sql, vals)
-        pass
+        log.debug(f"Logging reaction emoji '{emoji}' deleted by user "
+                  f"'{payload.user_id}'")
+        sql = """ INSERT INTO reaction_deletes(message_id, user_id, emoji)
+                  VALUES(?,?,?) """
+        vals = payload.message_id, payload.user_id, emoji
+        self.insert_row(sql, vals)
 
     # Typing
