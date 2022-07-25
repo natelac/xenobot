@@ -24,6 +24,12 @@ class sqlite3Logger:
         except Exception as e:
             log.debug(f"Could not insert row: {e}")
 
+    async def log_guild_statuses(self, guild):
+        """Logs the current statuses of all users in the guild"""
+        log.info(f"Logging user statuses")
+        for member in guild.members:
+            self.log_user_status(member)
+
     async def full_log_guild(self, guild, earliest_date):
         """Iteratively logs all relevant information in a guild"""
         log.info(f"Logging guild '{guild.name}'")
@@ -90,9 +96,12 @@ class sqlite3Logger:
         self.insert_row(sql, vals)
 
     def log_user_status(self, member):
+        status = str(member.status)
+        log.debug(f"Logging status for '{member.name}'")
         sql = """ INSERT INTO user_statuses(user_id, status)
                   VALUES(?,?) """
-        pass
+        vals = member.id, status
+        self.insert_row(sql, vals)
 
     # Channels
     def log_text_channel(self, channel):

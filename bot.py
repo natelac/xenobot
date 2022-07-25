@@ -83,10 +83,9 @@ async def on_ready():
 
    # Start actively logging
     while(True):
-       # TODO:
-       # - Add logic here to recieve a shutdown command then run bot.close()
-        log.info(f"Logging user statuses")
-        #log_guild_statuses(guild)
+        # TODO:
+        # - Add logic here to recieve a shutdown command then run bot.close()
+        await sql_log.log_guild_statuses(guild)
         await asyncio.sleep(LOG_TIME)
 
 # ------------------------
@@ -98,6 +97,7 @@ async def on_message(msg):
 
 @bot.event
 async def on_raw_message_edit(payload):
+    log.info(f"Cannot handle message edit: {payloadj}")
     #TODO
     # - Fetch message that was edited and pass it to sql_log
     #sql_log.log_message_edit(payload)

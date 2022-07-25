@@ -77,12 +77,14 @@ async def on_ready():
         await bot.close()
 
     # Start logging
-    logger = sqlite3Logger(args.db_path)
-    await logger.full_log_guild(guild, args.earliest_date)
+    sql_log = sqlite3Logger(args.db_path)
+    await sql_log.full_log_guild(guild, args.earliest_date)
     await bot.close()
 
-def main(argv):
-    bot.run(TOKEN)
+#def main(argv):
+    #bot.run(TOKEN)
 
-if __name__ == "__main__":
-    main(sys.argv)
+#if __name__ == "__main__":
+    #main(sys.argv)
+
+bot.run(TOKEN)
