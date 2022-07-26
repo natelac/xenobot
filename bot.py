@@ -71,6 +71,8 @@ bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
 # Initialize logger
 sql_log = sqlite3Logger(args.db_path)
 
+
+
 # ------------------------
 # Core Loop (on_ready)
 # ------------------------
@@ -123,14 +125,6 @@ async def on_raw_reaction_add(payload):
 @bot.event
 async def on_raw_reaction_remove(payload):
     sql_log.log_reaction_delete(payload)
-
-@bot.event
-async def on_raw_reaction_clear(payload):
-    log.info(f"Cannot handle reaction clears: {payload}")
-
-@bot.event
-async def on_raw_reaction_clear_emoji(payload):
-    log.info(f"Cannot handle reaction emoji clears: {payload}")
 
 # ------------------------
 # Run the bot

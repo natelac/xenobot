@@ -5,8 +5,17 @@
 # - Check that python3 exists and that it is python3.8, if not ry running python3.8
 # directly
 
-main_usage() {
+pipe=tmp/botpipe
+
+usage() {
   echo "Usage: $0 (start [-g guild -p db_path] | gather [-g guild -p db_path | stop)"
+}
+
+check_pipe() {
+  if [[ ! -p $pipe ]]; then
+    echo "Could not find pipe: $pipe"
+    exit 1
+  fi
 }
 
 function main(){
@@ -15,7 +24,11 @@ function main(){
   fi
 
   case ${1} in
-    help | start | gather | stop)
+    start)
+      ${1};
+      ;;
+    gather | stop)
+      $check_pipe
       ${1} "${@:2}";
       ;;
     *)
@@ -30,10 +43,12 @@ function start(){
 }
 
 function gather(){
+  echo "$@" >$pipe
   python3.8 gather.py "$@"
 }
 
 function stop(){
+  echo "$@" 
   echo "stop not implemented"
 }
   
