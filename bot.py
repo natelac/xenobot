@@ -62,6 +62,8 @@ intents.presences = True
 intents.guilds = True
 intents.messages = True
 intents.reactions = True
+intents.typing = True
+intents.voice_states = True
 
 # Initiallize the bot
 bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
@@ -106,6 +108,10 @@ async def on_raw_message_edit(payload):
 @bot.event
 async def on_raw_message_delete(payload):
     sql_log.log_message_delete(payload)
+
+@bot.event
+async def on_raw_typing(payload):
+    sql_log.log_typing(payload)
 
 # ------------------------
 # Reaction events

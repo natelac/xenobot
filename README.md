@@ -3,8 +3,6 @@
 A bot used for gathering 
 
 ## TODO
-- Implement sql\_logging in "bot.py" using "log\_utils.py"
-- Add argument parsing to bot.py
 - Make xenobot always running
   - Have commands sent to it via http
 - Using "crontab -e" to make a cron job for the bot!!!
@@ -45,7 +43,7 @@ A bot used for gathering
     - All channel information
       - Log of messages sent, and by whom
       - Log when a channel is created/deleted/changed
-      - Log when a user is typing and for how long
+      - Log when a user is typing
     - All voice channel information
       - Log voice channel messages
       - Log of users joining/leaving a voice channel

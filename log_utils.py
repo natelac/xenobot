@@ -182,3 +182,9 @@ class sqlite3Logger:
         self.insert_row(sql, vals)
 
     # Typing
+    def log_typing(self, payload):
+        log.debug(f"Logging typing event by user '{payload.user_id}'")
+        sql = """ INSERT INTO typing(user_id, channel_id, time)
+                  VALUES(?,?,?) """
+        vals = payload.user_id, payload.channel_id, payload.timestamp
+        self.insert_row(sql, vals)
