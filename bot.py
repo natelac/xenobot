@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 import pathlib
 import logging
+import errno
 
 from log_utils import sqlite3Logger
 
@@ -19,6 +20,7 @@ from log_utils import sqlite3Logger
 # Default arguments
 DEFAULT_GUILD = "Area 51"
 DEFAULT_DB_PATH = pathlib.Path("var/xenodb.sqlite3")
+FIFO = 'botpipe'
 
 # Parse arguments
 parser = argparse.ArgumentParser(
@@ -53,7 +55,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = args.guild # The guild the bot
 COMMAND_PREFIX = '!'# Is this still necessary?
-LOG_TIME = (60) * 5 # Seconds between logs
+LOG_TIME = 1 #(60) * 5 # Seconds between logs
 
 # Intents the bot will use
 intents = discord.Intents.all()
@@ -71,7 +73,29 @@ bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
 # Initialize logger
 sql_log = sqlite3Logger(args.db_path)
 
+async def active_log(guild):
+    while(True):
+        await sql_log.log_guild_statuses(guild)
+        await asyncio.sleep(LOG_TIME)
 
+async def read_fifo():
+    #TODO: Handle gather and stop
+    #- Gets stuck in infinite loop that cannot be exited out of
+    if os.path.exists(FIFO):
+        os.unlink(FIFO)
+    os.mkfifo(FIFO)
+
+    while(True):
+        #TODO: 
+        # - Make sure fifo writing from bash has newline at end
+        # - Handle commands
+        fifo = os.open(FIFO, os.O_NONBLOCK | os.O_RDONLY)
+        buf = os.read(fifo, 100)
+        if buf:
+            content = buf.decode("utf-8")
+            content = content.split("\n")
+            log.info(f"READ: {content}")
+        await asyncio.sleep(1)
 
 # ------------------------
 # Core Loop (on_ready)
@@ -85,12 +109,10 @@ async def on_ready():
     else:
         log.info(f"Successfully connected to guild: {GUILD}")
 
-   # Start actively logging
-    while(True):
-        # TODO:
-        # - Add logic here to recieve a shutdown command then run bot.close()
-        await sql_log.log_guild_statuses(guild)
-        await asyncio.sleep(LOG_TIME)
+    loop = asyncio.get_event_loop()
+    loop.create_task(active_log(guild))
+    loop.create_task(read_fifo())
+    #loop.run_forever()
 
 # ------------------------
 # Message events
