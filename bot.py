@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import pathlib
 import logging
 import errno
+import shutil
 
 from log_utils import sqlite3Logger
 
@@ -20,7 +21,7 @@ from log_utils import sqlite3Logger
 # Default arguments
 DEFAULT_GUILD = "Area 51"
 DEFAULT_DB_PATH = pathlib.Path("var/xenodb.sqlite3")
-FIFO = 'botpipe'
+FIFO = 'tmp/botpipe'
 
 # Parse arguments
 parser = argparse.ArgumentParser(
@@ -55,7 +56,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = args.guild # The guild the bot
 COMMAND_PREFIX = '!'# Is this still necessary?
-LOG_TIME = 1 #(60) * 5 # Seconds between logs
+LOG_TIME = (60) * 5 # Seconds between logs
 
 # Intents the bot will use
 intents = discord.Intents.all()
@@ -79,23 +80,22 @@ async def active_log(guild):
         await asyncio.sleep(LOG_TIME)
 
 async def read_fifo():
-    #TODO: Handle gather and stop
-    #- Gets stuck in infinite loop that cannot be exited out of
+    #TODO: 
+    # - Make sure fifo writing from bash has newline at end
+    # - Handle commands
+    # - Delete FIFO at the end
     if os.path.exists(FIFO):
         os.unlink(FIFO)
     os.mkfifo(FIFO)
 
     while(True):
-        #TODO: 
-        # - Make sure fifo writing from bash has newline at end
-        # - Handle commands
         fifo = os.open(FIFO, os.O_NONBLOCK | os.O_RDONLY)
         buf = os.read(fifo, 100)
         if buf:
             content = buf.decode("utf-8")
             content = content.split("\n")
             log.info(f"READ: {content}")
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.1)
 
 # ------------------------
 # Core Loop (on_ready)
