@@ -3,12 +3,14 @@
 A bot used for gathering 
 
 ## TODO
-- Make xenobot always running
-  - Have commands sent to it via http
+- Have gather.py and bot.py detect if they are being read as a library (i.e.,
+  from controller.py) or are being run as a command
+  - Make it so they have a main class that is run with arguments (passes
+    parser.parse_args() if it being run as a command)
 - Using "crontab -e" to make a cron job for the bot!!!
-- Standardize logging (fx log.info vs log.debug) 
 
 ## Future Features
+- Standardize logging (fx log.info vs log.debug) 
 - Fix duplicate values for "gather.py"
   - I think it's just things that have incremental primary keys?
 - Make a config file

@@ -8,7 +8,9 @@
 pipe=tmp/botpipe
 
 usage() {
-  echo "Usage: $0 (start [-g guild -p db_path] | gather [-g guild -p db_path | stop)"
+  echo "Usage: $0 (start [-g guild -p db_path] |"
+  echo "           gather [-g guild -p db_path -d earliest_date] |"
+  echo "           stop)"
 }
 
 check_pipe() {
@@ -18,38 +20,41 @@ check_pipe() {
   fi
 }
 
-function main(){
+main(){
   if [[ ${#} == 0 ]]; then
-    main_usage;
+    $usage;
   fi
 
   case ${1} in
     start)
       ${1};
       ;;
-    gather | stop)
+    gather)
       $check_pipe
       ${1} "${@:2}";
       ;;
+    stop)
+      $check_pipe
+      ${1}
+      ;;
     *)
-      echo $main_usage;
+      echo $usage;
       exit 1;
       ;;
   esac
 }
 
-function start(){
+start(){
   python3.8 bot.py "$@"
 }
 
-function gather(){
+gather(){
   echo "$@" >$pipe
   python3.8 gather.py "$@"
 }
 
-function stop(){
+stop(){
   echo "$@" 
-  echo "stop not implemented"
 }
   
 main "$@";

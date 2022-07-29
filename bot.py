@@ -112,7 +112,6 @@ async def on_ready():
     loop = asyncio.get_event_loop()
     loop.create_task(active_log(guild))
     loop.create_task(read_fifo())
-    #loop.run_forever()
 
 # ------------------------
 # Message events
