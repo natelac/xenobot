@@ -15,139 +15,127 @@ import shutil
 
 from log_utils import sqlite3Logger
 
-# -----------------------
-# Arguments and Logging
-# -----------------------
-# Default arguments
-DEFAULT_GUILD = "Area 51"
-DEFAULT_DB_PATH = pathlib.Path("var/xenodb.sqlite3")
-FIFO = 'tmp/botpipe'
-
-# Parse arguments
-parser = argparse.ArgumentParser(
-        description="Monitor the discord server for new data")
-parser.add_argument('-g', '--guild', type=str,
-                    help='name of guild to scrape data from',
-                    default=DEFAULT_GUILD)
-parser.add_argument('-p', '--db_path', type=pathlib.Path,
-                    help='path to sqlite3 database to store data in',
-                    default=DEFAULT_DB_PATH)
-parser.add_argument('-v', '--verbose',
-                    help=f"increase output verbosity, "
-                         f"more v's give more verbosity",
-                    action="count", default=0)
-
-args = parser.parse_args()
-
-# Change level of logging by verbosity
-levels = [logging.WARNING, logging.INFO, logging.DEBUG]
-level = levels[min(args.verbose, len(levels) -1)]
-logging.basicConfig(level=logging.CRITICAL, format='%(message)s')
-log = logging.getLogger('bot')
-log.setLevel(level=level)
-
-
-# -----------------------
-# Initialize Bot and 
-# Variables
-# -----------------------
-# Set constants
+# Load defaults
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = args.guild # The guild the bot
-COMMAND_PREFIX = '!'# Is this still necessary?
-LOG_TIME = (60) * 5 # Seconds between logs
+DEFAULT_GUILD = os.getenv('GUILD')
+DEFAULT_DB_PATH = pathlib.Path(os.getenv('DB_PATH'))
+FIFO = os.getenv('FIFO')
+COMMAND_PREFIX = '!'
 
-# Intents the bot will use
-intents = discord.Intents.all()
-intents.members = True
-intents.presences = True
-intents.guilds = True
-intents.messages = True
-intents.reactions = True
-intents.typing = True
-intents.voice_states = True
+class xenobot:
+    # Initiallize the bot
+    intents = discord.Intents.all()
+    intents.members = True
+    intents.presences = True
+    intents.guilds = True
+    intents.messages = True
+    intents.reactions = True
+    intents.typing = True
+    intents.voice_states = True
+    bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
+    def __init__(self, args):
+        self.args = args
+        self.log_time = (60) * 5
 
-# Initiallize the bot
-bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
 
-# Initialize logger
-sql_log = sqlite3Logger(args.db_path)
+        # Initialize logger
+        self.sql_log = sqlite3Logger(args.db_path)
 
-async def active_log(guild):
-    while(True):
-        await sql_log.log_guild_statuses(guild)
-        await asyncio.sleep(LOG_TIME)
+        # Change level of logging by verbosity
+        levels = [logging.WARNING, logging.INFO, logging.DEBUG]
+        level = levels[min(args.verbose, len(levels) -1)]
+        logging.basicConfig(level=logging.CRITICAL, format='%(message)s')
+        self.log = logging.getLogger('bot')
+        self.log.setLevel(level=level)
 
-async def read_fifo():
-    #TODO: 
-    # - Make sure fifo writing from bash has newline at end
-    # - Handle commands
-    # - Delete FIFO at the end
-    if os.path.exists(FIFO):
-        os.unlink(FIFO)
-    os.mkfifo(FIFO)
+    def run(self):
+        self.bot.run(TOKEN)
 
-    while(True):
-        fifo = os.open(FIFO, os.O_NONBLOCK | os.O_RDONLY)
-        buf = os.read(fifo, 100)
-        if buf:
-            content = buf.decode("utf-8")
-            content = content.split("\n")
-            log.info(f"READ: {content}")
-        await asyncio.sleep(0.1)
 
-# ------------------------
-# Core Loop (on_ready)
-# ------------------------
-@bot.event
-async def on_ready():
-    guild = discord.utils.get(bot.guilds, name=GUILD)
-    if guild is None:
-        log.error(f"Could not find guild: {GUILD}")
-        await bot.close()
-    else:
-        log.info(f"Successfully connected to guild: {GUILD}")
+    async def active_log(self, guild):
+        while(True):
+            await self.sql_log.log_guild_statuses(guild)
+            await asyncio.sleep(LOG_TIME)
 
-    loop = asyncio.get_event_loop()
-    loop.create_task(active_log(guild))
-    loop.create_task(read_fifo())
+    async def read_fifo(self):
+        if os.path.exists(FIFO):
+            os.unlink(FIFO)
+        os.mkfifo(FIFO)
 
-# ------------------------
-# Message events
-# ------------------------
-@bot.event
-async def on_message(msg):
-    sql_log.log_message(msg)
+        while(True):
+            fifo = os.open(FIFO, os.O_NONBLOCK | os.O_RDONLY)
+            buf = os.read(fifo, 100)
+            if buf:
+                content = buf.decode("utf-8")
+                content = content.split("\n")
+                self.log.info(f"READ: {content}")
+            await asyncio.sleep(0.1)
 
-@bot.event
-async def on_raw_message_edit(payload):
-    log.info(f"Cannot handle message edit: {payloadj}")
-    #TODO
-    # - Fetch message that was edited and pass it to sql_log
-    #sql_log.log_message_edit(payload)
-    pass
+    # ------------------------
+    # Core Loop (on_ready)
+    # ------------------------
+    @bot.event
+    async def on_ready():
+        guild = discord.utils.get(bot.guilds, name=self.args.guild)
+        if guild is None:
+            self.log.error(f"Could not find guild: {GUILD}")
+            await self.bot.close()
+        else:
+            self.log.info(f"Successfully connected to guild: {GUILD}")
 
-@bot.event
-async def on_raw_message_delete(payload):
-    sql_log.log_message_delete(payload)
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.active_log(guild))
+        loop.create_task(self.read_fifo())
 
-@bot.event
-async def on_raw_typing(payload):
-    sql_log.log_typing(payload)
+    # ------------------------
+    # Message events
+    # ------------------------
+    @bot.event
+    async def on_message(msg):
+        self.sql_log.log_message(msg)
 
-# ------------------------
-# Reaction events
-# ------------------------
-@bot.event
-async def on_raw_reaction_add(payload):
-    sql_log.log_reaction_add(payload)
+    @bot.event
+    async def on_raw_message_edit(payload):
+        self.log.info(f"Cannot handle message edit: {payloadj}")
+        #TODO
+        # - Fetch message that was edited and pass it to sql_log
+        #sql_log.log_message_edit(payload)
+        pass
 
-@bot.event
-async def on_raw_reaction_remove(payload):
-    sql_log.log_reaction_delete(payload)
+    @bot.event
+    async def on_raw_message_delete(payload):
+        self.sql_log.log_message_delete(payload)
 
-# ------------------------
-# Run the bot
-# ------------------------
-bot.run(TOKEN)
+    @bot.event
+    async def on_raw_typing(payload):
+        self.sql_log.log_typing(payload)
+
+    # ------------------------
+    # Reaction events
+    # ------------------------
+    @bot.event
+    async def on_raw_reaction_add(payload):
+        self.sql_log.log_reaction_add(payload)
+
+    @bot.event
+    async def on_raw_reaction_remove(payload):
+        self.sql_log.log_reaction_delete(payload)
+
+if __name__ == '__main__':
+    # Parse arguments
+    parser = argparse.ArgumentParser(
+            description="Monitor the discord server for new data")
+    parser.add_argument('-g', '--guild', type=str,
+                        help='name of guild to scrape data from',
+                        default=DEFAULT_GUILD)
+    parser.add_argument('-p', '--db_path', type=pathlib.Path,
+                        help='path to sqlite3 database to store data in',
+                        default=DEFAULT_DB_PATH)
+    parser.add_argument('-v', '--verbose',
+                        help=f"increase output verbosity, "
+                             f"more v's give more verbosity",
+                        action="count", default=0)
+    args = parser.parse_args()
+    bot = xenobot(args)
+    bot.run()

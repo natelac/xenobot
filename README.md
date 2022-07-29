@@ -3,10 +3,7 @@
 A bot used for gathering 
 
 ## TODO
-- Have gather.py and bot.py detect if they are being read as a library (i.e.,
-  from controller.py) or are being run as a command
-  - Make it so they have a main class that is run with arguments (passes
-    parser.parse_args() if it being run as a command)
+- Use cogs to make the bot a class
 - Using "crontab -e" to make a cron job for the bot!!!
 
 ## Future Features
