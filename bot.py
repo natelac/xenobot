@@ -23,8 +23,7 @@ DEFAULT_DB_PATH = pathlib.Path(os.getenv('DB_PATH'))
 FIFO = os.getenv('FIFO')
 COMMAND_PREFIX = '!'
 
-class xenobot:
-    # Initiallize the bot
+def make_bot(args):
     intents = discord.Intents.all()
     intents.members = True
     intents.presences = True
@@ -34,10 +33,14 @@ class xenobot:
     intents.typing = True
     intents.voice_states = True
     bot = commands.Bot(command_prefix=COMMAND_PREFIX, intents=intents)
-    def __init__(self, args):
+    bot.add_cog(xenobot(bot, args))
+    return bot
+
+class xenobot(commands.Cog):
+    def __init__(self, bot, args):
+        self.bot = bot
         self.args = args
         self.log_time = (60) * 5
-
 
         # Initialize logger
         self.sql_log = sqlite3Logger(args.db_path)
@@ -49,14 +52,10 @@ class xenobot:
         self.log = logging.getLogger('bot')
         self.log.setLevel(level=level)
 
-    def run(self):
-        self.bot.run(TOKEN)
-
-
     async def active_log(self, guild):
         while(True):
             await self.sql_log.log_guild_statuses(guild)
-            await asyncio.sleep(LOG_TIME)
+            await asyncio.sleep(self.log_time)
 
     async def read_fifo(self):
         if os.path.exists(FIFO):
@@ -72,54 +71,45 @@ class xenobot:
                 self.log.info(f"READ: {content}")
             await asyncio.sleep(0.1)
 
-    # ------------------------
-    # Core Loop (on_ready)
-    # ------------------------
-    @bot.event
-    async def on_ready():
-        guild = discord.utils.get(bot.guilds, name=self.args.guild)
+    @commands.Cog.listener()
+    async def on_ready(self):
+        guild = discord.utils.get(self.bot.guilds, name=self.args.guild)
         if guild is None:
-            self.log.error(f"Could not find guild: {GUILD}")
+            self.log.error(f"Could not find guild: {self.args.guild}")
             await self.bot.close()
         else:
-            self.log.info(f"Successfully connected to guild: {GUILD}")
+            self.log.info(f"Successfully connected to guild: {self.args.guild}")
 
         loop = asyncio.get_event_loop()
         loop.create_task(self.active_log(guild))
         loop.create_task(self.read_fifo())
 
-    # ------------------------
-    # Message events
-    # ------------------------
-    @bot.event
-    async def on_message(msg):
+    @commands.Cog.listener()
+    async def on_message(self, msg):
         self.sql_log.log_message(msg)
 
-    @bot.event
-    async def on_raw_message_edit(payload):
+    @commands.Cog.listener()
+    async def on_raw_message_edit(self, payload):
         self.log.info(f"Cannot handle message edit: {payloadj}")
         #TODO
         # - Fetch message that was edited and pass it to sql_log
         #sql_log.log_message_edit(payload)
         pass
 
-    @bot.event
-    async def on_raw_message_delete(payload):
+    @commands.Cog.listener()
+    async def on_raw_message_delete(self, payload):
         self.sql_log.log_message_delete(payload)
 
-    @bot.event
-    async def on_raw_typing(payload):
+    @commands.Cog.listener()
+    async def on_raw_typing(self, payload):
         self.sql_log.log_typing(payload)
 
-    # ------------------------
-    # Reaction events
-    # ------------------------
-    @bot.event
-    async def on_raw_reaction_add(payload):
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
         self.sql_log.log_reaction_add(payload)
 
-    @bot.event
-    async def on_raw_reaction_remove(payload):
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(self, payload):
         self.sql_log.log_reaction_delete(payload)
 
 if __name__ == '__main__':
@@ -137,5 +127,5 @@ if __name__ == '__main__':
                              f"more v's give more verbosity",
                         action="count", default=0)
     args = parser.parse_args()
-    bot = xenobot(args)
-    bot.run()
+    bot = make_bot(args)
+    bot.run(TOKEN)
