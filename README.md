@@ -3,17 +3,13 @@
 A bot used for gathering 
 
 ## TODO
-- Figure out if there is a way to check if the bot process is running so you
-  can make alternate decisions
-- Finish "controller.py gather"
-  - Have it write in named pipe --OR--
-  - Have it create and close a bot to gather data
-- Don't spend too much time on the above two, focus on polishing everything in
-  general
+- Finish bin/xenobot
+  - Simply pass commands to controller.py
+  - Simple help message
+- Cleanup and polish everything 
 
 ## Future Features
 - Using "crontab -e" to make a cron job for the bot!!!
-- Standardize logging (fx log.info vs log.debug) 
 - Fix duplicate values for "gather.py"
   - I think it's just things that have incremental primary keys?
 - Make a config file
@@ -22,7 +18,6 @@ A bot used for gathering
   - Store default DB\_PATH and GUILD
   - Add whitelist/blacklists to channels/users etc.
 - Comment code and files better
-- Implement passive logging
 - Make more useful views
   - Most recent logged nickname
   - Count of emojis to all users messages
