@@ -2,8 +2,9 @@
 # xenobot
 
 # TODO:
-# - Check that python3 exists and that it is python3.8, if not ry running python3.8
-# directly
+# - Check python3.8 is being used
+# - Just pass commands directly to controller.py, it will give any errors if it
+# is formatted wrong
 
 pipe=tmp/botpipe
 

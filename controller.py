@@ -12,21 +12,31 @@ from bot import make_bot
 load_dotenv()
 DEFAULT_GUILD = os.getenv('GUILD')
 DEFAULT_DB_PATH = pathlib.Path(os.getenv('DB_PATH'))
-FIFO = os.getenv('FIFO')
+FIFO = pathlib.Path(os.getenv('FIFO'))
 TOKEN = os.getenv('DISCORD_TOKEN')
+
+def write_to_fifo(msg):
+    if not pathlib.Path.exists(FIFO):
+        print("No named pipe at:", FIFO)
+        print("Restart the bot...") 
+        return
+    fd = os.open(FIFO, os.O_WRONLY)
+    line = str.encode(msg + "\n")
+    os.write(fd, line)
 
 def start(args):
     print("starting")
-    print(args)
     bot = make_bot(args)
     bot.run(TOKEN)
 
 def gather(args):
     print("gathering")
-    print(args)
+    line = "gather" + "," + str(args.earliest_date)
+    write_to_fifo(line)
 
-def stop():
+def stop(args):
     print("stopping")
+    write_to_fifo("stop")
 
 # Parse arguments
 parser = argparse.ArgumentParser(
@@ -52,7 +62,9 @@ parser_gather.add_argument('-d', '--earliest_date', type=date.fromisoformat,
              f'uses iso format <yyyy-mm-dd> '
              f'with a default of 4 weeks ago',
         default=(date.today() - datetime.timedelta(weeks=4)))
+parser_gather.set_defaults(func=gather)
 parser_stop = subparsers.add_parser('stop',
         help='stop the bot')
+parser_stop.set_defaults(func=stop)
 args = parser.parse_args()        
 args.func(args)
