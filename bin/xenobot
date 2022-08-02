@@ -22,7 +22,9 @@ usage() {
   echo "  -vv                   display up to debug level logging"
   echo "  -g, --guild           name of guild to log"
   echo "  -p, --db_path         path to sqlite3 database"
-  echo "  -d, --earliest_date   date furthest back in UTC to scrape data from"
+  echo "  -d, --earliest_date   date furthest back in UTC to scrape data from,"
+  echo "                        uses iso format <yyyy-mm-dd> with"
+  echo "                        a default of 4 weeks ago"
   echo ""
   echo "Runs: ./controller.py [args]"
 }
