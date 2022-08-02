@@ -3,9 +3,7 @@
 A bot used for gathering 
 
 ## TODO
-- Finish bin/xenobot
-  - Simply pass commands to controller.py
-  - Simple help message
+- Create a setup.py
 - Cleanup and polish everything 
 
 ## Future Features

@@ -1,3 +1,4 @@
+#!/usr/bin/python3.8
 import sys
 import os
 import time
@@ -15,13 +16,17 @@ import shutil
 
 from log_utils import sqlite3Logger
 
+if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
+    if not (sys.version_info[0] > 3):
+        raise Exception("Python3.8 or above is required")
+
 # Load defaults
 load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
-DEFAULT_GUILD = os.getenv("GUILD")
-DEFAULT_DB_PATH = pathlib.Path(os.getenv("DB_PATH"))
-FIFO = pathlib.Path(os.getenv("FIFO"))
-COMMAND_PREFIX = "!"
+TOKEN = os.getenv('DISCORD_TOKEN')
+DEFAULT_GUILD = os.getenv('GUILD')
+DEFAULT_DB_PATH = pathlib.Path(os.getenv('DB_PATH'))
+FIFO = pathlib.Path(os.getenv('FIFO'))
+COMMAND_PREFIX = os.getenv('COMMAND_PREFIX')
 
 
 def make_bot(args):
@@ -54,7 +59,7 @@ class xenobot(commands.Bot):
             os.remove(FIFO)
 
     async def close(self):
-        self.log.info("\nStopping bot...")
+        self.log.info("\nStopping bot")
         await self.cleanup()
         await super().close()
 
@@ -131,8 +136,8 @@ class sql_cog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_message_edit(self, payload):
-        self.bot.log.info(f"Cannot handle message edit: {payloadj}")
-        # TODO
+        self.bot.log.info(f"Cannot handle message edit: {payload}")
+        #TODO
         # - Fetch message that was edited and pass it to sql_log
         # sql_log.log_message_edit(payload)
         pass
@@ -163,20 +168,20 @@ if __name__ == "__main__":
         "-g",
         "--guild",
         type=str,
-        help="name of guild to scrape data from",
+        help="name of guild to log",
         default=DEFAULT_GUILD,
     )
     parser.add_argument(
         "-p",
         "--db_path",
         type=pathlib.Path,
-        help="path to sqlite3 database to store data in",
+        help="path to sqlite3 database",
         default=DEFAULT_DB_PATH,
     )
     parser.add_argument(
         "-v",
         "--verbose",
-        help=f"increase output verbosity, " f"more v's give more verbosity",
+        help=f"increase output verbosity",
         action="count",
         default=0,
     )

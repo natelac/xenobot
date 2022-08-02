@@ -1,4 +1,4 @@
-#!/usr/bin/env/ python3.8
+#!/usr/bin/python3.8
 
 """Data scraping script for discord, loads data into an sqlite3 db
 """
@@ -17,6 +17,10 @@ import time
 import logging
 
 from log_utils import sqlite3Logger
+
+if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
+    if not (ssy.version_info[0] > 3):
+        raise Exception("Python3.8 or above is required")
 
 # Default arguments
 DEFAULT_GUILD = "Area 51"
@@ -96,11 +100,10 @@ async def on_ready():
     await sql_log.full_log_guild(guild, args.earliest_date)
     await bot.close()
 
-
 # def main(argv):
-# bot.run(TOKEN)
+#   bot.run(TOKEN)
 
 # if __name__ == "__main__":
-# main(sys.argv)
+#   main(sys.argv)
 
 bot.run(TOKEN)

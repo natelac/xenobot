@@ -9,54 +9,47 @@
 pipe=tmp/botpipe
 
 usage() {
-  echo "Usage: $0 (start [-g guild -p db_path] |"
-  echo "           gather [-g guild -p db_path -d earliest_date] |"
-  echo "           stop)"
+  echo "Usage: $0 <COMMAND> [FLAGS]"
+  echo ""
+  echo " Commands" 
+  echo "  start [-g -p]         connect to discord.com and begin logging"
+  echo "  gather [-d]           command running bot to log existing data"
+  echo "  stop                  command running bot to shutdown"
+  echo ""
+  echo " Flags"
+  echo "  -h, --help            display this message"
+  echo "  -v, --verbose         display up to info level logging"
+  echo "  -vv                   display up to debug level logging"
+  echo "  -g, --guild           name of guild to log"
+  echo "  -p, --db_path         path to sqlite3 database"
+  echo "  -d, --earliest_date   date furthest back in UTC to scrape data from,"
+  echo "                        uses iso format <yyyy-mm-dd> with"
+  echo "                        a default of 4 weeks ago"
+  echo ""
+  echo "Runs: ./controller.py [args]"
 }
 
-check_pipe() {
-  if [[ ! -p $pipe ]]; then
-    echo "Could not find pipe: $pipe"
-    exit 1
-  fi
-}
+if [ $# -lt 1 ]
+then
+  usage
+  exit 1
+fi
 
-main(){
-  if [[ ${#} == 0 ]]; then
-    $usage;
-  fi
+if [[ ( $@ == "--help" ) || $@ == "-h" ]]
+then
+  usage
+  exit 0
+fi
 
-  case ${1} in
-    start)
-      ${1};
-      ;;
-    gather)
-      $check_pipe
-      ${1} "${@:2}";
-      ;;
-    stop)
-      $check_pipe
-      ${1}
-      ;;
-    *)
-      echo $usage;
-      exit 1;
-      ;;
-  esac
-}
+case $1 in
+  start | gather | stop)
+    #echo "Running: python3.8 controller.py $@"
+    ./controller.py $@
+    ;;
 
-start(){
-  python3.8 bot.py "$@"
-}
+  *)
+    usage
+    ;;
+esac
 
-gather(){
-  echo "$@" >$pipe
-  python3.8 gather.py "$@"
-}
-
-stop(){
-  echo "$@" 
-}
-  
-main "$@";
 exit 0
