@@ -3,8 +3,8 @@
 A bot used for gathering 
 
 ## TODO
+- Create a setup.py
 - Cleanup and polish everything 
-- Undo rm gather.py
 
 ## Future Features
 - Using "crontab -e" to make a cron job for the bot!!!
