@@ -41,17 +41,17 @@ def make_bot(args):
     bot = xenobot(COMMAND_PREFIX, intents, args)
     return bot
 
+
 class xenobot(commands.Bot):
     def __init__(self, command_prefix, intents, args):
-        super().__init__(command_prefix=command_prefix,
-                intents=intents)
+        super().__init__(command_prefix=command_prefix, intents=intents)
         self.add_cog(sql_cog(self, args))
 
         # Change level of logging by verbosity
         levels = [logging.WARNING, logging.INFO, logging.DEBUG]
-        level = levels[min(args.verbose, len(levels) -1)]
-        logging.basicConfig(level=logging.CRITICAL, format='%(message)s')
-        self.log = logging.getLogger('bot')
+        level = levels[min(args.verbose, len(levels) - 1)]
+        logging.basicConfig(level=logging.CRITICAL, format="%(message)s")
+        self.log = logging.getLogger("bot")
         self.log.setLevel(level=level)
 
     async def cleanup(self):
@@ -63,6 +63,7 @@ class xenobot(commands.Bot):
         await self.cleanup()
         await super().close()
 
+
 class sql_cog(commands.Cog):
     def __init__(self, bot, args):
         self.bot = bot
@@ -71,7 +72,6 @@ class sql_cog(commands.Cog):
 
         # Initialize logger
         self.sql_log = sqlite3Logger(args.db_path)
-
 
         self.make_fifo()
 
@@ -85,12 +85,12 @@ class sql_cog(commands.Cog):
             return
 
     async def active_log(self, guild):
-        while(True):
+        while True:
             await self.sql_log.log_guild_statuses(guild)
             await asyncio.sleep(self.log_time)
 
     async def read_fifo(self):
-        while(True):
+        while True:
             if os.path.exists(FIFO):
                 fifo = os.open(FIFO, os.O_NONBLOCK | os.O_RDONLY)
                 buf = os.read(fifo, 100)
@@ -105,13 +105,10 @@ class sql_cog(commands.Cog):
 
                     async def switch_stop(args):
                         await self.bot.close()
-                        
+
                     for line in lines:
                         args = line.split(",")
-                        options = {
-                                "gather": switch_gather,
-                                "stop": switch_stop
-                                }
+                        options = {"gather": switch_gather, "stop": switch_stop}
                         await options[args[0]](args)
 
                 await asyncio.sleep(0.1)
@@ -139,10 +136,10 @@ class sql_cog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_message_edit(self, payload):
-        #self.bot.log.info(f"Cannot handle message edit: {payloadj}")
+        self.bot.log.info(f"Cannot handle message edit: {payload}")
         #TODO
         # - Fetch message that was edited and pass it to sql_log
-        #sql_log.log_message_edit(payload)
+        # sql_log.log_message_edit(payload)
         pass
 
     @commands.Cog.listener()
@@ -161,20 +158,33 @@ class sql_cog(commands.Cog):
     async def on_raw_reaction_remove(self, payload):
         self.sql_log.log_reaction_delete(payload)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Parse arguments
     parser = argparse.ArgumentParser(
-            description="Monitor the discord server for new data")
-    parser.add_argument('-g', '--guild', type=str,
-                        help='name of guild to log',
-                        default=DEFAULT_GUILD)
-    parser.add_argument('-p', '--db_path', type=pathlib.Path,
-                        help='path to sqlite3 database',
-                        default=DEFAULT_DB_PATH)
-    parser.add_argument('-v', '--verbose',
-                        help=f"increase output verbosity, "
-                             f"more v's give more verbosity",
-                        action="count", default=0)
+        description="Monitor the discord server for new data"
+    )
+    parser.add_argument(
+        "-g",
+        "--guild",
+        type=str,
+        help="name of guild to log",
+        default=DEFAULT_GUILD,
+    )
+    parser.add_argument(
+        "-p",
+        "--db_path",
+        type=pathlib.Path,
+        help="path to sqlite3 database",
+        default=DEFAULT_DB_PATH,
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help=f"increase output verbosity",
+        action="count",
+        default=0,
+    )
     args = parser.parse_args()
     bot = make_bot(args)
     bot.run(TOKEN)
