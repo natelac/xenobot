@@ -27,9 +27,7 @@ parser = argparse.ArgumentParser(
     description="Scrape existing data from discord servers"
 )
 parser.add_argument(
-    "-g",
-    "--guild",
-    type=str,
+    "-g", "--guild", type=str,
     help="name of guild to scrape data from",
     default=DEFAULT_GUILD,
 )
