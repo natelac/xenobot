@@ -8,6 +8,7 @@ import logging
 # Setup logger
 log = logging.getLogger("bot")
 
+
 class sqlite3Logger:
     def __init__(self, db_path):
         try:
@@ -47,11 +48,13 @@ class sqlite3Logger:
             log.info(f"Logging channel '{channel.name}'")
             self.log_text_channel(channel)
             try:
-                messages = [message async for message in channel.history(
-                            limit=None,
-                            after=datetime.combine(
-                                earliest_date,
-                                datetime.min.time()))]
+                messages = [
+                    message
+                    async for message in channel.history(
+                        limit=None,
+                        after=datetime.combine(earliest_date, datetime.min.time()),
+                    )
+                ]
             except Exception as e:
                 log.info(f"Could not fetch message: {e}")
                 continue
@@ -107,22 +110,28 @@ class sqlite3Logger:
     def log_text_channel(self, channel):
         sql = """ INSERT INTO text_channels(channel_id, channel_name, guild_id, position, mention, created)
                   VALUES(?,?,?,?,?,?) """
-        vals = channel.id, channel.name, channel.guild.id, channel.position, \
-               channel.mention, channel.created_at
+        vals = (
+            channel.id,
+            channel.name,
+            channel.guild.id,
+            channel.position,
+            channel.mention,
+            channel.created_at,
+        )
         self.insert_row(sql, vals)
 
     def log_text_channel_add(self, channel):
         self.log_text_channel(channel)
 
     def log_channel_delete(self, payload):
-        #TODO
+        # TODO
         sql = """ INSERT INTO text_channel_deletes(channel_name, guild_id,
                       position, mention, created)
                   VALUES(?,?,?,?,?) """
         pass
 
     def log_channel_edit(self, payload):
-        #TODO
+        # TODO
         sql = """ INSERT INTO text_channel_deletes(channel_name, deleted)
                   VALUES(?,?) """
         pass
@@ -133,8 +142,14 @@ class sqlite3Logger:
         sql = """ INSERT INTO messages(message_id, guild_id, channel_id,
                       author_id, content, created)
                   VALUES(?,?,?,?,?,?) """
-        vals = msg.id, msg.guild.id, msg.channel.name, msg.author.id, \
-                msg.content, msg.created_at
+        vals = (
+            msg.id,
+            msg.guild.id,
+            msg.channel.name,
+            msg.author.id,
+            msg.content,
+            msg.created_at,
+        )
         self.insert_row(sql, vals)
 
     def log_message_delete(self, payload):
@@ -156,8 +171,7 @@ class sqlite3Logger:
     # Reactions
     def log_reaction(self, reaction):
         emoji = str(reaction.emoji)
-        log.debug(f"Logging reaction '{emoji}' on message "
-                  f"'{reaction.message.id}'")
+        log.debug(f"Logging reaction '{emoji}' on message " f"'{reaction.message.id}'")
         sql = """ INSERT INTO reactions(message_id, emoji, count)
                   VALUES(?,?,?) """
         vals = reaction.message.id, emoji, reaction.count
@@ -165,8 +179,9 @@ class sqlite3Logger:
 
     def log_reaction_add(self, payload):
         emoji = str(payload.emoji)
-        log.debug(f"Logging reaction emoji '{emoji}' added by user "
-                  f"'{payload.user_id}'")
+        log.debug(
+            f"Logging reaction emoji '{emoji}' added by user " f"'{payload.user_id}'"
+        )
         sql = """ INSERT INTO reaction_adds(message_id, user_id, emoji)
                   VALUES(?,?,?) """
         vals = payload.message_id, payload.user_id, emoji
@@ -174,8 +189,9 @@ class sqlite3Logger:
 
     def log_reaction_delete(self, payload):
         emoji = str(payload.emoji)
-        log.debug(f"Logging reaction emoji '{emoji}' deleted by user "
-                  f"'{payload.user_id}'")
+        log.debug(
+            f"Logging reaction emoji '{emoji}' deleted by user " f"'{payload.user_id}'"
+        )
         sql = """ INSERT INTO reaction_deletes(message_id, user_id, emoji)
                   VALUES(?,?,?) """
         vals = payload.message_id, payload.user_id, emoji
