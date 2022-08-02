@@ -25,17 +25,14 @@ def write_to_fifo(msg):
     os.write(fd, line)
 
 def start(args):
-    print("starting")
     bot = make_bot(args)
     bot.run(TOKEN)
 
 def gather(args):
-    print("gathering")
     line = "gather" + "," + str(args.earliest_date)
     write_to_fifo(line)
 
 def stop(args):
-    print("stopping")
     write_to_fifo("stop")
 
 # Parse arguments

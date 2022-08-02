@@ -21,7 +21,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 DEFAULT_GUILD = os.getenv('GUILD')
 DEFAULT_DB_PATH = pathlib.Path(os.getenv('DB_PATH'))
 FIFO = pathlib.Path(os.getenv('FIFO'))
-COMMAND_PREFIX = '!'
+COMMAND_PREFIX = os.getenv('COMMAND_PREFIX')
 
 
 def make_bot(args):
@@ -54,7 +54,7 @@ class xenobot(commands.Bot):
             os.remove(FIFO)
 
     async def close(self):
-        self.log.info("\nStopping bot...")
+        self.log.info("\nStopping bot")
         await self.cleanup()
         await super().close()
 
