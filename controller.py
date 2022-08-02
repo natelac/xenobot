@@ -8,6 +8,11 @@ from datetime import date
 import datetime
 from dotenv import load_dotenv
 from bot import make_bot
+import sys
+
+if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
+    if not (sys.version_info[0] > 3):
+        raise Exception("Python3.8 or above is required")
 
 # Default arguments
 load_dotenv()

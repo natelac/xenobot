@@ -18,6 +18,10 @@ import logging
 
 from log_utils import sqlite3Logger
 
+if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
+    if not (ssy.version_info[0] > 3):
+        raise Exception("Python3.8 or above is required")
+
 # Default arguments
 DEFAULT_GUILD = "Area 51"
 DEFAULT_DB_PATH = pathlib.Path("var/xenodb.sqlite3")

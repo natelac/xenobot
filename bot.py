@@ -16,6 +16,10 @@ import shutil
 
 from log_utils import sqlite3Logger
 
+if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
+    if not (sys.version_info[0] > 3):
+        raise Exception("Python3.8 or above is required")
+
 # Load defaults
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
