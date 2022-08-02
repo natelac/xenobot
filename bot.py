@@ -135,7 +135,7 @@ class sql_cog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_message_edit(self, payload):
-        self.bot.log.info(f"Cannot handle message edit: {payloadj}")
+        #self.bot.log.info(f"Cannot handle message edit: {payloadj}")
         #TODO
         # - Fetch message that was edited and pass it to sql_log
         #sql_log.log_message_edit(payload)
