@@ -3,10 +3,8 @@
 A bot used for gathering 
 
 ## TODO
-- Finish bin/xenobot
-  - Simply pass commands to controller.py
-  - Simple help message
 - Cleanup and polish everything 
+- Undo rm gather.py
 
 ## Future Features
 - Using "crontab -e" to make a cron job for the bot!!!
