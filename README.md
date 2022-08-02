@@ -1,10 +1,12 @@
 # xenobot
 
-A bot used for gathering 
+A bot used for gathering and logging discord user and channel information
+including messages and reactions. 
 
 ## TODO
 - Create a setup.py
 - Cleanup and polish everything 
+- Create some simple data analytics tools
 
 ## Future Features
 - Using "crontab -e" to make a cron job for the bot!!!
