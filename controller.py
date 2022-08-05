@@ -1,18 +1,17 @@
-#!/usr/bin/python3.8
 import pathlib
 import dotenv
 import argparse
 import dotenv
 import os
-from datetime import date
 import datetime
-from dotenv import load_dotenv
-from bot import make_bot
 import sys
+from datetime import date
+from dotenv import load_dotenv
 
-if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
-    if not (sys.version_info[0] > 3):
-        raise Exception("Python3.8 or above is required")
+from bot import make_bot
+
+if sys.version_info < (3,8):
+    raise Exception("Python3.8 or above is required")
 
 # Default arguments
 load_dotenv()

@@ -26,7 +26,7 @@ usage() {
   echo "                        uses iso format <yyyy-mm-dd> with"
   echo "                        a default of 4 weeks ago"
   echo ""
-  echo "Runs: ./controller.py [args]"
+  echo "Runs: python3 controller.py [args]"
 }
 
 if [ $# -lt 1 ]
@@ -43,8 +43,8 @@ fi
 
 case $1 in
   start | gather | stop)
-    #echo "Running: python3.8 controller.py $@"
-    ./controller.py $@
+    #echo "Running: python3 controller.py $@"
+    python3 controller.py $@
     ;;
 
   *)

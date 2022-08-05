@@ -1,26 +1,21 @@
-#!/usr/bin/python3.8
-
-"""Data scraping script for discord, loads data into an sqlite3 db
-"""
-
 import argparse
 import asyncio
-from datetime import date
 import datetime
-from discord.ext import commands
-import discord
-from dotenv import load_dotenv
 import os
 import pathlib
 import sys
 import time
 import logging
+from datetime import date
+from dotenv import load_dotenv
+
+import discord
+from discord.ext import commands
 
 from log_utils import sqlite3Logger
 
-if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
-    if not (ssy.version_info[0] > 3):
-        raise Exception("Python3.8 or above is required")
+if sys.version_info < (3,8):
+    raise Exception("Python3.8 or above is required")
 
 # Default arguments
 DEFAULT_GUILD = "Area 51"
