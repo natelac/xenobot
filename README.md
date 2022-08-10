@@ -10,6 +10,8 @@ Run `pip install .` to install using `setup.py`.
 
 Only guarenteed to work using Linux.
 
+Rename the file `.env_example` to `.env` after adding your bot's discord token and adding the name of the guild to monitor.
+
 ## Usage
 
 ### Creating the Database
