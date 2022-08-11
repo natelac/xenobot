@@ -22,6 +22,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 
 def write_to_fifo(msg):
+    """Writes a message to the named pipe"""
     if not pathlib.Path.exists(FIFO):
         print("No named pipe at:", FIFO)
         print("Restart the bot...")
@@ -32,16 +33,19 @@ def write_to_fifo(msg):
 
 
 def start(args):
+    """Runs the bot with the given args"""
     bot = make_bot(args)
     bot.run(TOKEN)
 
 
 def gather(args):
+    """Tells the bot to gather server information"""
     line = "gather" + "," + str(args.earliest_date)
     write_to_fifo(line)
 
 
 def stop(args):
+    """Tells the bot to stop"""
     write_to_fifo("stop")
 
 

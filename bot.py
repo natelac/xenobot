@@ -62,7 +62,7 @@ class xenobot(commands.Bot):
             os.remove(FIFO)
 
     async def close(self):
-        """Stops the bot"""
+        """Stops the bot cleanly"""
         self.log.info("\nStopping bot")
         await self.cleanup()
         await super().close()
