@@ -18,7 +18,7 @@ Rename the file `.env_example` to `.env` after adding your bot's discord token a
 
 First initialize the database by using `bin/xenodb create`. This will create a database at `var/xenodb.sqlite3` from the sql schema and views stored in `sql/schema` and `sql/views` respectively.
 
-You can access the data by running `sqlite3 var/xenodb.sqlite3`, and using any sqlite3 commands to access the data.
+You can access the data by running `sqlite3 var/xenodb.sqlite3`.
 
 If the database ever gets messed up, you can run `bin/xenodb destroy` to delete the database or `bin/xenodb reset` to destroy it and create another one. However, it will delete any information stored.
 
