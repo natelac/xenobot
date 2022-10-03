@@ -1,4 +1,4 @@
-# Xenobot: A Discord Server Logging Bot
+# Xenobot: A discord server logging bot
 
 A bot used for collecting discord user and channel information including messages and reactions. Data can be collected from the server logs or it can come from monitoring.
 
